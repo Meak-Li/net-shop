@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title%}用户登录页面 {% endblock %}
+{% load static %}
+{% block headerjs %}
+<script type="text/javascript" src="{% static 'js/md5-min.js' %}"></script>
+{% endblock %}
+{% block main%}
+    
+<div class="login-body">
+    <div class="login-card">
+        <div class="login-top">
+            <h3>新用户登录</h3>
+            <h5>尊敬的用户，欢迎您回来！</h5>
+        </div>
+        <div class="login-bottom">
+           <form method="post" action="/userapp/login/" onsubmit="return login();">
+               <input type="hidden" name="time" id="time">
+                <div class="login-input-box">
+                  {% csrf_token %}
+                <input type="text" id="account" name="account" value="" class="login-admin active" placeholder="邮箱登录">
+                <span style="color:red;" id="aSpan"></span>
+
+                <input type="password" id="password" name="password" value="" class="login-password">
+                <span style="color:red;" id="pSpan"></span>
+
+                <input type="text" style="height:36px;width: 100px;" id="code" onblur="checkCode(this.value)"><img src="/userapp/loadCode/" onclick="changeCode(this)"><span style="color:red;" id="cSpan"></span>
+
+                <input type="hidden" name="reflag" value="{{reflag}}">
+                <input type="hidden" name="cartitems" value="{{cartitems}}">
+                <input type="hidden" name="totalPrice" value="{{totalPrice}}">
+
+                <button class="login-btn" style="color: white;text-decoration: none;cursor: pointer">登录</button>
+            </div>
+           </form>
+            <div class="login-img">
+                <img src="{% static 'images/login_05.png' %}" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block footerjs %}
+   
+<script>
+    function isEmail(str){
+        var reg = /^[a-zA-Z0-9_-]{6,}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        return reg.test(str);
+    }
+
+    function login(){
+        //获取输入框的值
+        var account = $('#account').val();
+        var password = $('#password').val();
+
+        var flag = true;
+
+        //简单校验
+        if(account.length<6||!isEmail(account)){
+            $('#aSpan').text('邮箱格式不正确');
+            flag  = false;
+        }
+
+        if(password.length<6){
+            $('#pSpan').text('密码长度不能小于六位');
+            flag = false;
+        }
+
+        var code = $('#code').val();
+        var cflag = checkCode(code);
+
+        if(!cflag){
+            $('#cSpan').text('×');
+            flag = false;
+        }
+
+        if(!flag){
+            return false;
+        }
+
+
+        var hex_pwd = hex_md5(password);
+
+        //var hex_pwd = hex_md5(password+time)
+        $('#password').val(hex_pwd);
+        return true;
+
+    }
+
+
+    //切换验证码
+    function changeCode(obj){
+        $(obj).attr('src','/userapp/loadCode/?r='+new Date().getTime())
+    }
+
+
+    function checkCode(txt){
+        var cflag = false;
+        $.ajax({
+            url:'/userapp/checkCode/',
+            type:'get',
+            data:{'code':txt},
+            async:false,
+            success:function(result){
+                var flag = result.vflag;
+                if(flag){
+                    cflag = true;
+                    $('#cSpan').text('√');
+                }else{
+                    $('#cSpan').text('×');
+                }
+            }
+        })
+
+        return cflag;
+
+    }
+
+</script>
+
+{% endblock%}

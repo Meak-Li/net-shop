@@ -1,0 +1,45 @@
+{% load static %}
+<div class="head">
+    <div class="head-in">
+        <ul class="options">
+            <li class="sub"><a href="http://127.0.0.1:8000/?category=2#">我的订单</a></li>
+            
+            <li class="sub"><a href="/">商城首页</a></li>
+            <li class="sub"><a href="/cartapp/queryAll/">我的购物车</a></li>
+        </ul>
+        {% if userInfo %}
+        <div class="register"><a href="/userapp/center/">欢迎 {{userInfo.uname}}</a></div>
+        {% else %}
+
+            <div class="register"><a href="/userapp/register/">免费注册</a></div>
+            <div class="sign"><a href="/userapp/login/">登录</a></div>
+        {% endif %}
+
+    </div>
+</div>
+<div class="search">
+    <ul class="items">
+        <li class="item">
+            <a href="http://127.0.0.1:8000/?category=2#">
+                <img src="{% static 'images/1_09.png' %}">
+                <p>10:00开抢</p>
+            </a>
+        </li>
+        <li class="item">
+            <a href="http://127.0.0.1:8000/?category=2#">
+                <img src="{% static 'images/1_11.png' %}">
+                <p>买手砍价</p>
+            </a>
+        </li>
+        <li class="item">
+            <a href="http://127.0.0.1:8000/?category=2#">
+                <img src="{% static 'images/1_13.png' %}">
+                <p>验货质检</p>
+            </a>
+        </li>
+    </ul>
+    <div class="input">
+        <input type="" name="" value="请输入想找的宝贝">
+        <img src="{% static 'images/1_06.png' %}">
+    </div>
+</div>
